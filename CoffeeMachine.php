@@ -4,7 +4,7 @@
 //Question No 3: mazas problēmas ar tipu pārejām (piemēram: array-string-int) ...
 
 function changeInCoins($amount) {
-    $coinType = [100,50,20,10,5,2,1];
+    $coinType = [200,100,50,20,10,5,2,1];
     $coins = "";
     do {
         for ($i=0; $i<count($coinType); $i++) {
@@ -17,6 +17,15 @@ function changeInCoins($amount) {
     $newArr = str_split($coins);
     return $result = array_combine($coinType,$newArr);
 
+}
+
+function balance($reminder, $coins) {
+    foreach ($coins as $coin => $amount) {
+        $returnedCoinAmount = intdiv($reminder, $coin);
+        $coins[$coin] +=$returnedCoinAmount;
+        $reminder -=$returnedCoinAmount * $coin;
+    }
+    return $coins;
 }
 
 $items =
@@ -32,16 +41,18 @@ $items =
 //echo $items["BlackCoffee"] . PHP_EOL;
 $wallet =
     [
-    1 => 3,
-    2 => 3,
-    5 => 3,
-    10 => 3,
-    20 => 3,
-    50 => 3,
-    100 => 3
+        200 => 3,
+        100 => 3,
+        50 => 3,
+        20 => 3,
+        10 => 3,
+        5 => 3,
+        2 => 3,
+        1 => 3,
     ];
 
 $No=0;
+echo "CoffeeMachine menu:" . PHP_EOL;
 foreach ($items as $item => $amount)
     {
     $No+=1;
@@ -52,7 +63,7 @@ echo PHP_EOL;
 
 $insertedAmount = 0;
 $moneyLeft = 0;
-
+echo "Your wallet balance: " . PHP_EOL;
 foreach ($wallet as $coin => $amount)
     {
     echo "[$coin cent coin x ($amount)]" . PHP_EOL;
@@ -84,7 +95,7 @@ $productPrice = $items["$chosenItem"] ;
 echo "You choose: " . $chosenItem . ", which costs: " . $productPrice . "cents" . PHP_EOL;
 
 while (true) {
-    $coinsInserted = readline("Please insert coins 1/2/5/10/20/50/100, to confirm & finnish input `buy`: ");
+    $coinsInserted = readline("Please insert coins 1/2/5/10/20/50/100/200, to confirm & finnish input `buy`: ");
     if ($coinsInserted === "buy")
     {
 
@@ -95,9 +106,22 @@ while (true) {
         }
 
         $moneyLeft = $insertedAmount - $productPrice;
-        system("clear");
-        echo "Thank you for your purchase! Take your change: " . PHP_EOL;
-        print_r(changeInCoins($moneyLeft));
+        echo PHP_EOL;
+        echo "Thank you for your purchase! Your CHANGE: " . $moneyLeft . " cents" . PHP_EOL;
+        foreach (changeInCoins($moneyLeft) as $coin => $amount)
+        {
+            if ($amount !== "0") {
+            echo "[$coin cent coin x ($amount)]" . PHP_EOL;
+            }
+        }
+//        print_r(changeInCoins($moneyLeft));
+        echo "NEW BALANCE:" . PHP_EOL;
+        $balance= balance($moneyLeft, $wallet);
+        foreach ($balance as $coin => $amount)
+        {
+            echo "[$coin cent coin x ($amount)]" . PHP_EOL;
+        }
+
         exit;
     }
 
@@ -120,4 +144,3 @@ while (true) {
     echo "Inserted amount: ". $insertedAmount . PHP_EOL;
 
 }
-
